@@ -32,7 +32,14 @@
       <h1>Service Inquiry Form</h1>
       <p>Please fill out the form below to send your inquiry directly to <strong>TheMagicHandyWizard@proton.me</strong>.</p>
 
-      <form id="inquiry-form" action="mailto:TheMagicHandyWizard@proton.me" method="post" enctype="text/plain">
+      <!-- Web3Forms Integration -->
+      <form id="inquiry-form" action="https://api.web3forms.com/submit" method="POST">
+        <!-- Web3Forms Access Key -->
+        <input type="hidden" name="access_key" value="bad218f9-a3b7-4715-98f6-80591fbddf3a">
+
+        <!-- Email destination (optional override for your ProtonMail) -->
+        <input type="hidden" name="email" value="TheMagicHandyWizard@proton.me">
+
         <div>
           <label for="firstName">First Name</label>
           <input type="text" id="firstName" name="First Name" required>
@@ -49,7 +56,7 @@
         </div>
 
         <div>
-          <label for="email">Email</label>
+          <label for="email">Your Email</label>
           <input type="email" id="email" name="Email" required>
         </div>
 
@@ -87,10 +94,21 @@
     const form = document.getElementById('inquiry-form');
     const thankYou = document.getElementById('thankyou-message');
 
-    form.addEventListener('submit', function(event){
+    form.addEventListener('submit', async function(event) {
       event.preventDefault();
-      thankYou.style.display = 'block';
-      form.reset();
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData
+      });
+
+      if (response.ok) {
+        thankYou.style.display = 'block';
+        form.reset();
+        setTimeout(() => thankYou.style.display = 'none', 6000);
+      } else {
+        alert('⚠️ There was an error sending your message. Please try again.');
+      }
     });
   </script>
 </body>
