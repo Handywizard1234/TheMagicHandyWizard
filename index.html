@@ -25,15 +25,10 @@
       padding: 32px;
     }
     .wrap { max-width: 880px; width: 100%; }
-    header {
-      display: flex;
-      align-items: center;
-      gap: 18px;
-      margin-bottom: 18px;
-      justify-content: center;
-    }
-    .logo { font-weight: 800; font-size: 28px; letter-spacing: .6px; }
-    .banner {
+    header { text-align: center; margin-bottom: 20px; }
+    .logo {
+      font-weight: 800;
+      font-size: 30px;
       background: #222;
       color: #f8f3e8;
       display: inline-block;
@@ -47,8 +42,8 @@
       border-radius: 14px;
       box-shadow: 0 10px 30px rgba(15,23,36,.12);
     }
-    form { display: grid; gap: 14px; }
-    label { font-weight: 600; }
+    form { display: grid; gap: 16px; }
+    label { font-weight: 600; margin-bottom: 6px; display: block; }
     .field-wrap { position: relative; }
     input, select, textarea {
       width: 100%;
@@ -62,8 +57,7 @@
     .checkmark {
       position: absolute;
       right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
+      top: 38px;
       color: #2ecc71;
       font-size: 18px;
       display: none;
@@ -99,7 +93,7 @@
 <body>
   <div class="wrap">
     <header>
-      <div class="banner logo">TheMagicHandyWizard</div>
+      <div class="logo">TheMagicHandyWizard</div>
     </header>
 
     <main class="card">
@@ -133,15 +127,7 @@
 
         <div class="field-wrap">
           <label for="phone">Phone Number</label>
-          <input 
-            type="tel" 
-            id="phone" 
-            name="Phone Number" 
-            placeholder="(555) 123-4567"
-            pattern="^\\(\\d{3}\\)\\s\\d{3}-\\d{4}$"
-            title="Please enter a valid phone number like (555) 123-4567"
-            required
-          >
+          <input type="tel" id="phone" name="Phone Number" placeholder="(555) 123-4567" required>
           <span class="checkmark" id="phone-check">✅</span>
         </div>
 
@@ -175,89 +161,80 @@
     </main>
   </div>
 
- <script>
-  const phoneInput = document.getElementById('phone');
-  const phoneCheck = document.getElementById('phone-check');
-  const emailInput = document.getElementById('email');
-  const emailCheck = document.getElementById('email-check');
-  const form = document.getElementById('inquiry-form');
-  const thankYou = document.getElementById('thankyou-message');
+  <script>
+    const phoneInput = document.getElementById('phone');
+    const phoneCheck = document.getElementById('phone-check');
+    const emailInput = document.getElementById('email');
+    const emailCheck = document.getElementById('email-check');
+    const form = document.getElementById('inquiry-form');
+    const thankYou = document.getElementById('thankyou-message');
 
-  // Simple, flexible validation
-  function isValidPhone(value) {
-    // Accepts (555) 123-4567, 5551234567, 555-123-4567, etc.
-    return /^\D*(\d\D*){10,15}$/.test(value);
-  }
-
-  // Format digits into (555) 123-4567 style
-  function formatUSPhone(value) {
-    const digits = (value.match(/\d/g) || []).join('').slice(0, 10);
-    if (digits.length <= 3) return digits;
-    if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
-    return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
-  }
-
-  // Optional: format live as user types
-  phoneInput.addEventListener('input', () => {
-    const raw = phoneInput.value;
-    const formatted = formatUSPhone(raw);
-    phoneInput.value = formatted;
-    const valid = isValidPhone(formatted);
-    phoneInput.classList.toggle('valid', valid);
-    phoneCheck.classList.toggle('show', valid);
-  });
-
-  // Email validation
-  emailInput.addEventListener('input', () => {
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
-    emailInput.classList.toggle('valid', valid);
-    emailCheck.classList.toggle('show', valid);
-  });
-
-  // Submission
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
-
-    const phoneValid = isValidPhone(phoneInput.value);
-    const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
-
-    if (!phoneValid) {
-      alert('⚠️ Please enter a valid phone number (at least 10 digits).');
-      phoneInput.focus();
-      return;
+    function isValidPhone(value) {
+      return /^\D*(\d\D*){10,15}$/.test(value);
     }
 
-    if (!emailValid) {
-      alert('⚠️ Please enter a valid email address.');
-      emailInput.focus();
-      return;
+    function formatUSPhone(value) {
+      const digits = (value.match(/\d/g) || []).join('').slice(0, 10);
+      if (digits.length <= 3) return digits;
+      if (digits.length <= 6) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+      return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
     }
 
-    // Clean up phone number before sending
-    const digits = (phoneInput.value.match(/\d/g) || []).join('');
-    const formattedDigits = digits.length >= 10
-      ? `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6,10)}`
-      : digits;
-
-    const formData = new FormData(form);
-    formData.set('Phone Number', formattedDigits);
-
-    const response = await fetch(form.action, {
-      method: form.method,
-      body: formData
+    phoneInput.addEventListener('input', () => {
+      const formatted = formatUSPhone(phoneInput.value);
+      phoneInput.value = formatted;
+      const valid = isValidPhone(formatted);
+      phoneInput.classList.toggle('valid', valid);
+      phoneCheck.classList.toggle('show', valid);
     });
 
-    if (response.ok) {
-      thankYou.style.display = 'block';
-      form.reset();
-      [phoneCheck, emailCheck].forEach(el => el.classList.remove('show'));
-      [phoneInput, emailInput].forEach(el => el.classList.remove('valid'));
-      setTimeout(() => (thankYou.style.display = 'none'), 5000);
-    } else {
-      alert('There was an error sending your message. Please try again.');
-    }
-  });
-</script>
+    emailInput.addEventListener('input', () => {
+      const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(emailInput.value);
+      emailInput.classList.toggle('valid', valid);
+      emailCheck.classList.toggle('show', valid);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const phoneValid = isValidPhone(phoneInput.value);
+      const emailValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(emailInput.value);
+
+      if (!phoneValid) {
+        alert('⚠️ Please enter a valid phone number (at least 10 digits).');
+        phoneInput.focus();
+        return;
+      }
+
+      if (!emailValid) {
+        alert('⚠️ Please enter a valid email address.');
+        emailInput.focus();
+        return;
+      }
+
+      const digits = (phoneInput.value.match(/\\d/g) || []).join('');
+      const formattedDigits = digits.length >= 10
+        ? `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6,10)}`
+        : digits;
+
+      const formData = new FormData(form);
+      formData.set('Phone Number', formattedDigits);
+
+      const response = await fetch(form.action, {
+        method: form.method,
+        body: formData
+      });
+
+      if (response.ok) {
+        thankYou.style.display = 'block';
+        form.reset();
+        [phoneCheck, emailCheck].forEach(el => el.classList.remove('show'));
+        [phoneInput, emailInput].forEach(el => el.classList.remove('valid'));
+        setTimeout(() => (thankYou.style.display = 'none'), 5000);
+      } else {
+        alert('There was an error sending your message. Please try again.');
+      }
+    });
+  </script>
 </body>
 </html>
-
