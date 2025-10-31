@@ -95,7 +95,7 @@
       </select>
 
       <label for="message">Additional Details (optional)</label>
-      <textarea id="message" name="Message" rows="5"></textarea>
+      <textarea id="message" name="Message" rows="5" placeholder="Explain the service you requested..."></textarea>
 
       <button type="submit">Submit Inquiry</button>
     </form>
@@ -113,7 +113,7 @@
     }
 
     function isValidEmail(value) {
-      return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value);
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
     }
 
     form.addEventListener('submit', async (e) => {
