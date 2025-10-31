@@ -188,8 +188,9 @@
       phoneCheck.classList.toggle('show', valid);
     });
 
+    // ✅ Fixed email validation regex
     emailInput.addEventListener('input', () => {
-      const valid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(emailInput.value);
+      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
       emailInput.classList.toggle('valid', valid);
       emailCheck.classList.toggle('show', valid);
     });
@@ -198,7 +199,7 @@
       e.preventDefault();
 
       const phoneValid = isValidPhone(phoneInput.value);
-      const emailValid = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(emailInput.value);
+      const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
 
       if (!phoneValid) {
         alert('⚠️ Please enter a valid phone number (at least 10 digits).');
@@ -212,7 +213,7 @@
         return;
       }
 
-      const digits = (phoneInput.value.match(/\\d/g) || []).join('');
+      const digits = (phoneInput.value.match(/\d/g) || []).join('');
       const formattedDigits = digits.length >= 10
         ? `(${digits.slice(0,3)}) ${digits.slice(3,6)}-${digits.slice(6,10)}`
         : digits;
